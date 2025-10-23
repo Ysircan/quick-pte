@@ -1,3 +1,11 @@
-import { neon } from '@neondatabase/serverless'
+import { PrismaClient } from '@prisma/client'
 
-export const sql = neon(process.env.DATABASE_URL!)  // Vercel 已注入
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  })
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
