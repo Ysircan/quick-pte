@@ -1,25 +1,21 @@
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation'
 
 export default function LogoutButton() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-    });
-
-    localStorage.removeItem("token");
-    router.push("/auth/login");
-  };
+  const handleLogout = () => {
+    localStorage.removeItem('token') // 清空 token
+    router.push('/auth/login')       // 跳回登录页
+  }
 
   return (
     <button
       onClick={handleLogout}
-      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+      className="text-sm text-gray-400 hover:text-red-400 transition"
     >
-      Log Out
+      Logout
     </button>
-  );
+  )
 }

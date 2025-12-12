@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'Store', href: '/store' },
+  { label: 'Practice', href: '/dashboard' },
   { label: 'Login', href: '/auth/login' },
   { label: 'About', href: '/about' },
 ]
@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
   <nav className="w-full bg-transparent text-white py-5 px-8 flex justify-center items-center space-x-20">
-  <div className="text-2xl font-bold tracking-wide">QUICK</div>
+  <div className="text-2xl font-bold tracking-wide"></div>
   <div className="flex space-x-8 text-sm font-medium">
     {navItems.map((item) => {
       const isActive = pathname === item.href

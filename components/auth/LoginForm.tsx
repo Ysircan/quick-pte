@@ -36,7 +36,8 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 
       // 成功：优先走父组件回调，否则兜底跳 /store
       if (onSuccess) onSuccess()
-      else router.push('/store')
+ else router.push('/dashboard')
+
     } catch (err) {
       console.error('Login error:', err)
       setError('Something went wrong')
