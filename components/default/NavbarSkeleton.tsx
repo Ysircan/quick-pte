@@ -14,9 +14,12 @@ export default function NavbarSkeleton(props: {
   return (
     <div className={styles.navBar}>
       <div className={styles.navInner}>
-        <div className={styles.navLeft}>
-          <div className={styles.navLogo}>{brand}</div>
-        </div>
+    <div className={styles.navLeft}>
+  <Link className={styles.navLogo} href="/">
+    {brand}
+  </Link>
+</div>
+
 
         <div className={styles.navRight}>
           <nav className={styles.navLinks}>

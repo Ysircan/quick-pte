@@ -20,9 +20,12 @@ export default function Navbar() {
   return (
     <div className={styles.navBar}>
       <div className={styles.navInner}>
-        <div className={styles.navLeft}>
-          <div className={styles.navLogo}>QUICK ENGINE</div>
-        </div>
+       <div className={styles.navLeft}>
+  <Link className={styles.navLogo} href="/">
+    QUICK
+  </Link>
+</div>
+
 
         <div className={styles.navRight}>
           <nav className={styles.navLinks}>
@@ -39,12 +42,10 @@ export default function Navbar() {
                 <button className={styles.navBtn} onClick={onLogout}>LOGOUT</button>
               </>
             ) : (
-              <Link
-                className={styles.navBtn}
-                href={`/auth/login?next=${encodeURIComponent(pathname || "/dashboard")}`}
-              >
-                LOGIN
-              </Link>
+            <Link className={styles.navBtn} href={`/auth/login?next=${encodeURIComponent(pathname || "/dashboard")}`}>
+  LOGIN
+</Link>
+
             )}
           </nav>
 
