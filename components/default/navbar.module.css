@@ -1,0 +1,99 @@
+/* components/default/navbar.module.css */
+
+.navBar {
+  position: absolute;
+  z-index: 10;
+  top: 10px;
+  left: 0;
+  right: 0;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.navInner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #111827;
+  pointer-events: auto;
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+}
+
+.navLogo {
+  background: rgba(254, 252, 232, 0.95);
+  border: 2px solid #111;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 #111;
+  padding: 5px 12px 4px;
+  font-weight: 800;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navBtn {
+  background: #ffffff;
+  border: 2px solid #111;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 #111;
+  padding: 5px 14px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #111827;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.navBtn:hover {
+  background: #fde68a;
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #111;
+}
+
+/* 语言切换 */
+.langToggle {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 2px solid #111;
+  background: #ffffff;
+  box-shadow: 0 3px 0 #111;
+  overflow: hidden;
+}
+
+.langSeg {
+  border: none;
+  padding: 4px 11px 3px;
+  font-size: 12px;
+  font-weight: 800;
+  background: transparent;
+  color: #111827;
+  cursor: pointer;
+}
+
+.langSegActive {
+  background: #fde68a;
+}
+
+.langSeg + .langSeg {
+  border-left: 1px solid #111;
+}

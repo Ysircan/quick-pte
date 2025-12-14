@@ -1,0 +1,139 @@
+/* components/default/tearLayout.module.css */
+
+/* 全局主题变量（来自 1.html 的 :root） */
+:global(:root) {
+  --hero-dark: #020617;
+  --hero-grad1: #f97316;
+  --hero-grad2: #0f766e;
+  --paper-bg: #fff5cf;
+  --comic-pink: #ff6b81;
+
+  --ink: #111827;
+  --nav-pill-bg: #fefce8;
+  --nav-btn-bg: #ffffff;
+  --nav-btn-hover: #fde68a;
+}
+
+/* 页面底色，防止露底（来自 1.html body） */
+:global(body) {
+  background: var(--comic-pink);
+  overflow-x: hidden;
+}
+
+.pageShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HERO 渐变层 ===== */
+.heroLayer {
+  height: 40vh;
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--hero-dark);
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, var(--hero-grad1) 0, #7c2d12 30%, transparent 55%),
+    radial-gradient(circle at bottom right, var(--hero-grad2) 0, #022c22 40%, var(--hero-dark) 100%);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+}
+
+/* HERO 底部撕裂 → 露出奶油纸 */
+.heroLayer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -26px;
+  height: 52px;
+  background: var(--paper-bg);
+  clip-path: polygon(
+    0 22px,
+    6% 8px,
+    13% 26px,
+    20% 6px,
+    28% 28px,
+    36% 9px,
+    44% 25px,
+    52% 7px,
+    60% 27px,
+    69% 5px,
+    78% 26px,
+    88% 9px,
+    95% 23px,
+    100% 12px,
+    100% 52px,
+    0 52px
+  );
+  z-index: 2;
+}
+
+/* ===== 奶油纸层 ===== */
+.paperLayer {
+  position: relative;
+  background: var(--paper-bg);
+  min-height: 28vh;
+  padding: 40px 0;
+  z-index: 1;
+}
+
+.paperLayer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -26px;
+  height: 52px;
+  background: var(--comic-pink);
+  clip-path: polygon(
+    0 16px,
+    5% 3px,
+    11% 24px,
+    18% 7px,
+    25% 27px,
+    33% 5px,
+    41% 23px,
+    50% 4px,
+    59% 25px,
+    68% 6px,
+    77% 26px,
+    86% 8px,
+    94% 22px,
+    100% 10px,
+    100% 52px,
+    0 52px
+  );
+  z-index: 2;
+}
+
+/* ===== 漫画粉层 ===== */
+.comicLayer {
+  background: var(--comic-pink);
+  min-height: 32vh;
+  padding: 40px 0 60px;
+}
+
+/* 临时占位（你想删就删） */
+.layerCenter {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.18;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+.heroLayer .layerCenter {
+  color: #fff;
+  opacity: 0.35;
+}

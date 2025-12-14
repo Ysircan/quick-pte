@@ -1,17 +1,32 @@
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const jwt = require('jsonwebtoken')
+// lib/auth.ts
+import { createRequire } from "module";
 
-const JWT_SECRET = process.env.JWT_SECRET!
+const require = createRequire(import.meta.url);
+const jwt = require("jsonwebtoken");
 
-export function signToken(payload: any, expiresIn = '7d') {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn })
+export type JwtPayload = {
+  userId: string;
+  email?: string;
+};
+
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET is missing");
+  }
+  return secret;
 }
 
-export function verifyToken(token: string) {
+export function signToken(payload: JwtPayload, expiresIn: string = "7d") {
+  return jwt.sign(payload, getJwtSecret(), { expiresIn });
+}
+
+export function verifyToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string; email: string }
+    const decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
+    if (!decoded?.userId) return null;
+    return decoded;
   } catch {
-    return null
+    return null;
   }
 }

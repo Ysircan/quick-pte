@@ -1,24 +1,35 @@
-// /hooks/useAuth.ts
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import useUser from "./useUser";
 
 /**
  * 页面登录校验：未登录自动跳转到 login 页
- * @param redirectTo 默认跳转路径（未登录时）
+ * - 用 replace 避免回退弹簧
+ * - 带 next 参数，登录后可回跳
  */
 export default function useAuth(redirectTo: string = "/auth/login") {
-  const { user, loading } = useUser();
+  const { user, loading, refresh } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // 等待 useUser 加载完，如果没有登录用户 → 跳转登录页
-    if (!loading && !user) {
-      router.push(redirectTo);
-    }
-  }, [user, loading, redirectTo, router]);
+    if (loading) return;
+    if (user) return;
 
-  return { user, loading };
+    const current = `${pathname}${searchParams?.toString() ? `?${searchParams.toString()}` : ""}`;
+    const url = `${redirectTo}?next=${encodeURIComponent(current || "/dashboard")}`;
+
+    // 用 replace：用户点返回不会再回到受保护页触发二次跳转
+    router.replace(url);
+  }, [user, loading, redirectTo, router, pathname, searchParams]);
+
+  return { user, loading, refresh };
 }
+
+
+
+
+

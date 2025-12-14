@@ -1,41 +1,59 @@
-// File: D:/quick/components/common/Navbar.tsx
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-
-const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Practice', href: '/dashboard' },
-  { label: 'Login', href: '/auth/login' },
-  { label: 'About', href: '/about' },
-]
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import styles from "./navbar.module.css";
+import useUser from "@/hooks/useUser";
 
 export default function Navbar() {
-  const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, loading } = useUser();
+
+  const isActive = (href: string) => pathname === href;
+
+  const onLogout = () => {
+    localStorage.removeItem("token");
+    router.replace("/auth/login");
+  };
 
   return (
-  <nav className="w-full bg-transparent text-white py-5 px-8 flex justify-center items-center space-x-20">
-  <div className="text-2xl font-bold tracking-wide"></div>
-  <div className="flex space-x-8 text-sm font-medium">
-    {navItems.map((item) => {
-      const isActive = pathname === item.href
-      return (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`transition-colors duration-200 ${
-            isActive
-              ? 'text-yellow-300'
-              : 'text-white hover:text-yellow-200'
-          }`}
-        >
-          {item.label}
-        </Link>
-      )
-    })}
-  </div>
-</nav>
+    <div className={styles.navBar}>
+      <div className={styles.navInner}>
+        <div className={styles.navLeft}>
+          <div className={styles.navLogo}>QUICK ENGINE</div>
+        </div>
 
-  )
+        <div className={styles.navRight}>
+          <nav className={styles.navLinks}>
+            <Link className={styles.navBtn} href="/demo">DEMO</Link>
+            <Link className={styles.navBtn} href="/students">STUDENTS</Link>
+            <Link className={styles.navBtn} href="/agencies">AGENCIES</Link>
+            <Link className={styles.navBtn} href="/news">NEWS</Link>
+            <Link className={styles.navBtn} href="/faq">FAQ</Link>
+            <Link className={styles.navBtn} href="/about">ABOUT</Link>
+
+            {!loading && user ? (
+              <>
+                <Link className={styles.navBtn} href="/dashboard">DASHBOARD</Link>
+                <button className={styles.navBtn} onClick={onLogout}>LOGOUT</button>
+              </>
+            ) : (
+              <Link
+                className={styles.navBtn}
+                href={`/auth/login?next=${encodeURIComponent(pathname || "/dashboard")}`}
+              >
+                LOGIN
+              </Link>
+            )}
+          </nav>
+
+          <div className={styles.langToggle}>
+            <button className={`${styles.langSeg} ${styles.langSegActive}`}>EN</button>
+            <button className={styles.langSeg}>中</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
