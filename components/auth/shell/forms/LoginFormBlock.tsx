@@ -1,27 +1,44 @@
-'use client';
+"use client";
 
-import AuthField from '../ui/AuthField';
-import AuthPrimaryButton from '../ui/AuthPrimaryButton';
-import AuthRowLinks from '../ui/AuthRowLinks';
+import AuthField from "../ui/AuthField";
+import AuthPrimaryButton from "../ui/AuthPrimaryButton";
+import AuthRowLinks from "../ui/AuthRowLinks";
 
 export default function LoginFormBlock({
+  t,
   onGoRegister,
   submitting,
   error,
 }: {
+  t: (key: string) => string;
   onGoRegister: () => void;
   submitting?: boolean;
   error?: string | null;
 }) {
   return (
     <>
-      <h2>Sign in to Quick</h2>
-      <p>Welcome back. Pick up where you left off.</p>
+      <h2>{t("auth.login.title")}</h2>
+      <p>{t("auth.login.sub")}</p>
 
-      <AuthField id="email" label="Email" placeholder="you@example.com" autoComplete="email" />
-      <AuthField id="pwd" label="Password" type="password" placeholder="••••••••" autoComplete="current-password" />
+      <AuthField
+        id="email"
+        label={t("auth.field.email")}
+        placeholder={t("auth.field.email.ph")}
+        autoComplete="email"
+      />
 
-      <AuthPrimaryButton text={submitting ? 'LOGGING IN...' : 'LOGIN'} disabled={submitting} />
+      <AuthField
+        id="pwd"
+        label={t("auth.field.password")}
+        type="password"
+        placeholder={t("auth.field.password.ph")}
+        autoComplete="current-password"
+      />
+
+      <AuthPrimaryButton
+        text={submitting ? t("auth.login.btn.loading") : t("auth.login.btn")}
+        disabled={submitting}
+      />
 
       {error ? (
         <div className="finePrint" role="alert">
@@ -30,8 +47,8 @@ export default function LoginFormBlock({
       ) : null}
 
       <AuthRowLinks
-        left={{ text: 'Forgot password?' }}
-        right={{ text: 'Create account', onClick: onGoRegister }}
+        left={{ text: t("auth.login.forgot") }}
+        right={{ text: t("auth.login.toRegister"), onClick: onGoRegister }}
       />
     </>
   );

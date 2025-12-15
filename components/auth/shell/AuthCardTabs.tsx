@@ -1,29 +1,32 @@
-'use client';
+"use client";
 
 export default function AuthCardTabs({
   view,
   onChange,
+  t,
 }: {
-  view: 'login' | 'register';
-  onChange: (v: 'login' | 'register') => void;
+  view: "login" | "register";
+  onChange: (v: "login" | "register") => void;
+  t: (key: string) => string;
 }) {
   return (
     <div className="authTabs" role="tablist" aria-label="Auth Tabs">
       <button
-        className={`tab ${view === 'login' ? 'active' : ''}`}
+        className={`tab ${view === "login" ? "active" : ""}`}
         type="button"
-        aria-selected={view === 'login'}
-        onClick={() => onChange('login')}
+        aria-selected={view === "login"}
+        onClick={() => onChange("login")}
       >
-        SIGN IN
+        {t("auth.tab.login")}
       </button>
+
       <button
-        className={`tab ${view === 'register' ? 'active' : ''}`}
+        className={`tab ${view === "register" ? "active" : ""}`}
         type="button"
-        aria-selected={view === 'register'}
-        onClick={() => onChange('register')}
+        aria-selected={view === "register"}
+        onClick={() => onChange("register")}
       >
-        REGISTER
+        {t("auth.tab.register")}
       </button>
     </div>
   );

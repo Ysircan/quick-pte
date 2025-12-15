@@ -258,6 +258,8 @@ body.auth-mode::after{
 .badge.dark{background:#111;color:#fff;}
 .badge .dot{width:10px;height:10px;border-radius:999px;background:rgba(0,0,0,.25);}
 .badge.dark .dot{background:rgba(255,255,255,.9);}
+.dotOk { background: #21c36a !important; }
+.dotBad { background: #de2910 !important; }
 .authSub{
   position:relative;z-index:1;
   margin-top:10px;

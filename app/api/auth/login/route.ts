@@ -32,6 +32,13 @@ export async function POST(req: Request) {
       data: { lastLoginAt: new Date() },
     })
 
+    // ✅ NEW: ensure global progress exists
+    await prisma.userProgress.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id, unlockXP: 0 },
+    })
+
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       JWT_SECRET,
@@ -45,7 +52,7 @@ export async function POST(req: Request) {
         id: user.id,
         name: user.name,
         email: user.email,
-      
+
         isSystemAccount: user.isSystemAccount,
         createdAt: user.createdAt,
       },

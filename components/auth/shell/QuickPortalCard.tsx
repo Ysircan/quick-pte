@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import AuthCardHeader from './AuthCardHeader';
-import AuthCardTabs from './AuthCardTabs';
-import LoginFormBlock from './forms/LoginFormBlock';
-import RegisterFormBlock from './forms/RegisterFormBlock';
+import { useState } from "react";
+import AuthCardHeader from "./AuthCardHeader";
+import AuthCardTabs from "./AuthCardTabs";
+import LoginFormBlock from "./forms/LoginFormBlock";
+import RegisterFormBlock from "./forms/RegisterFormBlock";
+import { useUiLang } from "@/components/i18n/UiLangProvider";
 
-const TOKEN_KEY = 'token';
+const TOKEN_KEY = "token";
 
-export default function QuickPortalCard({ initialView }: { initialView: 'login' | 'register' }) {
-  const [view, setView] = useState<'login' | 'register'>(initialView);
+export default function QuickPortalCard({
+  initialView,
+}: {
+  initialView: "login" | "register";
+}) {
+  const { t } = useUiLang();
+
+  const [view, setView] = useState<"login" | "register">(initialView);
 
   const [loginSubmitting, setLoginSubmitting] = useState(false);
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
@@ -17,17 +24,15 @@ export default function QuickPortalCard({ initialView }: { initialView: 'login' 
   const [registerError, setRegisterError] = useState<string | null>(null);
 
   const afterAuth = async () => {
-    // 可选：你想验证 me 就打开这段；不想就删掉
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      await fetch('/api/auth/me', {
-        method: 'GET',
+      await fetch("/api/auth/me", {
+        method: "GET",
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
     } catch {}
 
-    window.location.href = '/dashboard';
-;
+    window.location.href = "/dashboard";
   };
 
   const onLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,27 +42,29 @@ export default function QuickPortalCard({ initialView }: { initialView: 'login' 
 
     try {
       const fd = new FormData(e.currentTarget);
-      const email = String(fd.get('email') ?? '').trim();
-      const password = String(fd.get('pwd') ?? '');
+      const email = String(fd.get("email") ?? "").trim();
+      const password = String(fd.get("pwd") ?? "");
 
-      if (!email || !password) throw new Error('Please enter email and password.');
+      if (!email || !password) throw new Error(t("auth.err.missingEmailPwd"));
 
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const json = await res.json().catch(() => ({}));
 
-      if (!res.ok) throw new Error(json?.error ?? json?.message ?? 'Login failed.');
+      if (!res.ok)
+        throw new Error(
+          json?.error ?? json?.message ?? t("auth.err.loginFailed")
+        );
 
-      // ✅ 你后端已固定好：这里就直接取 token
       if (json?.token) localStorage.setItem(TOKEN_KEY, json.token);
 
       await afterAuth();
     } catch (err: any) {
-      setLoginError(err?.message ?? 'Login failed.');
+      setLoginError(err?.message ?? t("auth.err.loginFailed"));
     } finally {
       setLoginSubmitting(false);
     }
@@ -70,28 +77,50 @@ export default function QuickPortalCard({ initialView }: { initialView: 'login' 
 
     try {
       const fd = new FormData(e.currentTarget);
-      const email = String(fd.get('regEmail') ?? '').trim();
-      const password = String(fd.get('regPwd') ?? '');
-      const confirmPassword = String(fd.get('regPwd2') ?? '');
 
-      if (!email || !password) throw new Error('Please enter email and password.');
-      if (confirmPassword && confirmPassword !== password) throw new Error('Passwords do not match.');
+      const name = String(fd.get("regName") ?? "").trim();
+      const email = String(fd.get("regEmail") ?? "").trim();
+      const password = String(fd.get("regPwd") ?? "");
+      const confirmPassword = String(fd.get("regPwd2") ?? "");
 
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, confirmPassword }),
+      if (!name) throw new Error(t("auth.err.missingName"));
+      if (!email || !password) throw new Error(t("auth.err.missingRegisterFields"));
+      if (confirmPassword && confirmPassword !== password)
+        throw new Error(t("auth.err.passwordMismatch"));
+
+      const regRes = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       });
 
-      const json = await res.json().catch(() => ({}));
+      const regJson = await regRes.json().catch(() => ({}));
+      if (!regRes.ok)
+        throw new Error(
+          regJson?.error ?? regJson?.message ?? t("auth.err.registerFailed")
+        );
 
-      if (!res.ok) throw new Error(json?.error ?? json?.message ?? 'Register failed.');
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (json?.token) localStorage.setItem(TOKEN_KEY, json.token);
+      const loginJson = await loginRes.json().catch(() => ({}));
+      if (!loginRes.ok)
+        throw new Error(
+          loginJson?.error ?? loginJson?.message ?? t("auth.err.autoLoginFailed")
+        );
+
+      if (loginJson?.token) {
+        localStorage.setItem(TOKEN_KEY, loginJson.token);
+      } else {
+        throw new Error(t("auth.err.tokenMissing"));
+      }
 
       await afterAuth();
     } catch (err: any) {
-      setRegisterError(err?.message ?? 'Register failed.');
+      setRegisterError(err?.message ?? t("auth.err.registerFailed"));
     } finally {
       setRegisterSubmitting(false);
     }
@@ -100,30 +129,32 @@ export default function QuickPortalCard({ initialView }: { initialView: 'login' 
   return (
     <div className="loginLayer">
       <div className="loginCard" aria-label="Quick Auth">
-        <AuthCardHeader />
+        <AuthCardHeader t={t} />
 
         <div className="authBody">
-          <AuthCardTabs view={view} onChange={setView} />
+          <AuthCardTabs view={view} onChange={setView} t={t} />
 
           <form
-            className={`authForm ${view === 'login' ? 'show' : ''}`}
+            className={`authForm ${view === "login" ? "show" : ""}`}
             autoComplete="on"
             onSubmit={onLoginSubmit}
           >
             <LoginFormBlock
-              onGoRegister={() => setView('register')}
+              t={t}
+              onGoRegister={() => setView("register")}
               submitting={loginSubmitting}
               error={loginError}
             />
           </form>
 
           <form
-            className={`authForm ${view === 'register' ? 'show' : ''}`}
+            className={`authForm ${view === "register" ? "show" : ""}`}
             autoComplete="on"
             onSubmit={onRegisterSubmit}
           >
             <RegisterFormBlock
-              onGoLogin={() => setView('login')}
+              t={t}
+              onGoLogin={() => setView("login")}
               submitting={registerSubmitting}
               error={registerError}
             />

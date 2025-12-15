@@ -14,19 +14,53 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(cuid())
-  email             String   @unique
-  passwordHash      String
-  name              String?
-  
-  isSystemAccount   Boolean  @default(false)
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  name         String?
+
+  isSystemAccount Boolean @default(false)
 
   emailVerifiedAt   DateTime?
   passwordChangedAt DateTime?
   lastLoginAt       DateTime?
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ✅ relations (add these)
+  progress         UserProgress?
+  languageProgress UserLanguageProgress[]
 
   @@index([createdAt])
+}
+
+model UserProgress {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  unlockXP Int @default(0) // 全局解锁经验：任何语言学习都累计加（灰→亮只看它）
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([updatedAt])
+}
+
+model UserLanguageProgress {
+  id       String @id @default(cuid())
+  userId   String
+  language String // "en" | "ja" | "fr" | "de" | "zh" ... 用 string，别 enum
+
+  langXP Int @default(0) // 分语言经验：每个 language 独立累计
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, language])
+  @@index([userId, updatedAt])
 }
