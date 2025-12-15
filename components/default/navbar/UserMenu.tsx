@@ -102,7 +102,6 @@ export default function UserMenu() {
     window.location.href = "/auth/login";
   };
 
-  // ‘o¦‡T¯†«‹¬s†?¦‘~ó‡Ï§ SIGN IN‹¬^„÷?‘~ó‡Ï§‡Sô‘??‡?î‹¬%
   if (!hasToken) {
     return (
       <Link className={styles.navBtn} href="/auth/login">

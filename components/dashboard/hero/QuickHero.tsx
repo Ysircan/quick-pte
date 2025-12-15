@@ -2,15 +2,18 @@
 import styles from "./quickHero.module.css";
 
 type QuickHeroProps = {
-  /** 之后你给我 language->accent 的颜色时，直接传进来即可 */
   accent?: string;
+  fullHeight?: boolean; // 默认满屏，高度可关掉
 };
 
-export default function QuickHero({ accent }: QuickHeroProps) {
+export default function QuickHero({ accent, fullHeight = true }: QuickHeroProps) {
   const style = accent ? ({ ["--accent" as any]: accent } as React.CSSProperties) : undefined;
 
   return (
-    <div className={styles.bgWorld} style={style}>
+    <div
+      className={`${styles.bgWorld} ${fullHeight ? "" : styles.bgClamp}`}
+      style={style}
+    >
       <div className={styles.stage}>
         <section className={styles.hero}>
           <h1 className={styles.brand}>QUICK</h1>

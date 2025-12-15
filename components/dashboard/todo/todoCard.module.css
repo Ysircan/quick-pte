@@ -1,0 +1,215 @@
+:global(:root){
+  --ink:#111;
+  --paper:rgba(255,255,255,.92);
+  --yellow:#fde68a;
+  --bg-page:#F3F1EA;
+  --coral:#ff746a;
+}
+
+/* ===== Card base (keep your style) ===== */
+.card{
+  border:3px solid var(--ink);
+  border-radius:18px;
+  background:var(--paper);
+  box-shadow:8px 8px 0 var(--ink);
+  padding:12px;
+  min-height:140px;
+  max-width: 700px;
+  overflow:visible;
+
+  /* 防止外层吞字色/字体 */
+  color: var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+.cardHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:6px;
+  margin-bottom:10px;
+}
+.cardTitle{
+  margin:0;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  font-size:14px;
+  color:#111;
+  white-space:nowrap;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 10px 4px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 3px 0 var(--ink);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  flex:none;
+  color: var(--ink);
+}
+.cardBody{
+  color:rgba(17,17,17,.78);
+  font-size:13px;
+  line-height:1.45;
+  margin:0 0 8px;
+}
+
+/* ===== Task list ===== */
+.taskList{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.taskItem{
+  border:2px solid var(--ink);
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 4px 0 var(--ink);
+  overflow:hidden;
+}
+
+/* Top row of a task (capsule vibe, but stable) */
+.taskTop{
+  width:100%;
+  border:none;
+  background:transparent;
+  padding:7px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  cursor:pointer;
+  text-align:left;
+  color: var(--ink);
+}
+.taskLeft{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.dot{
+  width:10px;
+  height:10px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:#d1d5db;
+  flex:none;
+}
+.coral{ background:var(--coral); }
+
+.taskName{
+  margin:0;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width: 280px;
+  color: var(--ink);
+}
+.taskMeta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:none;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px 5px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 3px 0 var(--ink);
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  color: var(--ink);
+}
+.arrow{
+  width:28px;
+  height:28px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:var(--yellow);
+  box-shadow:0 3px 0 var(--ink);
+  font-weight:950;
+  transition:transform .18s ease;
+  flex:none;
+  color: var(--ink);
+}
+
+/* Details (expand BELOW) */
+.taskDetails{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .26s ease;
+  background:rgba(254,252,232,.70);
+  border-top:2px solid rgba(17,17,17,.18);
+}
+.detailsInner{
+  padding:10px 12px 12px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.detailsText{
+  margin:0;
+  color:rgba(17,17,17,.78);
+  font-size:12px;
+  line-height:1.55;
+  flex:1;
+  min-width:220px;
+}
+
+.btn{
+  background:#fff;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  box-shadow:0 3px 0 var(--ink);
+  padding:7px 12px 6px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:background-color .15s ease, transform .1s ease, box-shadow .1s ease;
+  white-space:nowrap;
+  flex:none;
+  align-self:flex-start;
+  color: var(--ink);
+}
+.btn:hover{
+  background:var(--yellow);
+  transform:translateY(1px);
+  box-shadow:0 2px 0 var(--ink);
+}
+
+/* Open state */
+.taskItem[data-open="true"] .taskDetails{ max-height:180px; }
+.taskItem[data-open="true"] .arrow{ transform:rotate(180deg); }
+
+@media (max-width:560px){
+  .taskName{ max-width: 220px; }
+  .taskItem[data-open="true"] .taskDetails{ max-height:320px; }
+}

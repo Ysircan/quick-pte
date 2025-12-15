@@ -6,15 +6,16 @@ import { EXAMS, LANGUAGE_META, LanguageKey } from "./languageExamMap";
 import { getActiveLanguage, setActiveLanguage } from "./activeLanguageStore";
 
 export default function LanguageExamCapsules() {
-  const [activeLang, setActiveLang] = useState<LanguageKey>(() => getActiveLanguage().lang);
+  // 首屏用固定默认，防止 SSR/CSR 不一致
+  const [activeLang, setActiveLang] = useState<LanguageKey>("english");
   const [activeExam, setActiveExam] = useState<string>("pte");
   const [open, setOpen] = useState<null | "lang" | "exam">(null);
 
-  // 初次挂载时同步一次本地存储里的语言
+  // 挂载后再同步本地存储的语言
   useEffect(() => {
     const stored = getActiveLanguage().lang;
     if (stored !== activeLang) setActiveLang(stored);
-  }, [activeLang]);
+  }, []);
 
   const accent = LANGUAGE_META[activeLang].accent;
   const langLabel = LANGUAGE_META[activeLang].label;
@@ -25,7 +26,6 @@ export default function LanguageExamCapsules() {
     return hit?.label ?? exams[0]?.label ?? "EXAM";
   }, [exams, activeExam]);
 
-  // †Ý'‘zo†^ÎŠîðŠù?†?Z exam „÷?†ð~†où‹¬OŠÎ¦†Sù†^Î†^øŠî¾ŠîðŠù?‡s"‡ªª„÷?„÷¦
   useEffect(() => {
     if (!exams.some((x) => x.key === activeExam) && exams[0]) {
       setActiveExam(exams[0].key);
@@ -34,7 +34,6 @@ export default function LanguageExamCapsules() {
 
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // click outside / ESC †.ü‚-ð
   useEffect(() => {
     function onDocDown(e: MouseEvent) {
       const el = rootRef.current;
@@ -70,7 +69,7 @@ export default function LanguageExamCapsules() {
           <span className={styles.capDot} aria-hidden="true" />
           <span>{langLabel}</span>
           <span className={styles.caret} aria-hidden="true">
-            
+        
           </span>
         </button>
 
@@ -85,7 +84,7 @@ export default function LanguageExamCapsules() {
               className={styles.capItem}
               onClick={() => {
                 setActiveLang(k);
-                setActiveLanguage(k); // 同步到共享状态，Hero 可取用
+                setActiveLanguage(k); // 同步到共享状态，Hero 取色
                 setOpen(null);
               }}
             >
@@ -112,7 +111,7 @@ export default function LanguageExamCapsules() {
           <span className={styles.capDot} aria-hidden="true" />
           <span>{examLabel}</span>
           <span className={styles.caret} aria-hidden="true">
-            
+         
           </span>
         </button>
 

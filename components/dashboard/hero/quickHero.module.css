@@ -19,7 +19,13 @@
   background:var(--bg-page);
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
 }
+.bgClamp{
+  min-height:auto;
+}
 
+.bgClamp .stage{
+  padding:32px 0 40px;
+}
 .bgWorld::before{
   content:"";
   position:fixed;
