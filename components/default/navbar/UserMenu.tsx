@@ -25,10 +25,11 @@ export default function UserMenu() {
   const [health, setHealth] = useState<"ok" | "bad">("ok");
   const [open, setOpen] = useState(false);
   const [displayName, setDisplayName] = useState<string>("PROFILE");
+  const [rawName, setRawName] = useState<string | undefined>(undefined);
 
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // 读 token
+  // Šî¯ token
   useEffect(() => {
     try {
       setHasToken(!!localStorage.getItem(TOKEN_KEY));
@@ -37,7 +38,7 @@ export default function UserMenu() {
     }
   }, []);
 
-  // 有 token 才做健康检查 & 取昵称
+  // ‘o% token ‘%?†?s†?¾†§ú‘œ?‘Y¾ & †?-‘~æ‡õø
   useEffect(() => {
     if (!hasToken) return;
 
@@ -59,6 +60,8 @@ export default function UserMenu() {
 
         const json = (await res.json().catch(() => ({}))) as MeResponse;
         const { name, email } = pickNameEmail(json);
+        const raw = (name || (email ? email.split("@")[0] : undefined))?.trim();
+        setRawName(raw);
         const show = (name || email || "PROFILE").trim();
         setDisplayName(show.length > 18 ? show.slice(0, 18) + "…" : show);
       } catch {
@@ -67,7 +70,7 @@ export default function UserMenu() {
     })();
   }, [hasToken]);
 
-  // 点击外部关闭
+  // ‡'û†Î¯†Ï-‚Ÿù†.ü‚-ð
   useEffect(() => {
     function onDown(e: MouseEvent) {
       const el = rootRef.current;
@@ -86,11 +89,11 @@ export default function UserMenu() {
   }, []);
 
   const initial = useMemo(() => {
-    const s = displayName?.trim();
-    if (!s) return "U";
-    const head = s.includes("@") ? s.split("@")[0] : s;
-    return (head[0] || "U").toUpperCase();
-  }, [displayName]);
+    const source = rawName || displayName?.trim();
+    if (!source) return "U";
+    const first = Array.from(source)[0] || "U";
+    return /^[a-z]/i.test(first) ? first.toUpperCase() : first;
+  }, [displayName, rawName]);
 
   const doLogout = () => {
     try {
@@ -99,7 +102,7 @@ export default function UserMenu() {
     window.location.href = "/auth/login";
   };
 
-  // 未登录：只显示 SIGN IN（不显示状态灯）
+  // ‘o¦‡T¯†«‹¬s†?¦‘~ó‡Ï§ SIGN IN‹¬^„÷?‘~ó‡Ï§‡Sô‘??‡?î‹¬%
   if (!hasToken) {
     return (
       <Link className={styles.navBtn} href="/auth/login">
@@ -116,6 +119,7 @@ export default function UserMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
+        aria-label={`User menu (${displayName})`}
       >
         <span
           className={`${styles.statusDot} ${
@@ -126,9 +130,8 @@ export default function UserMenu() {
         <span className={styles.avatarCircle} aria-hidden="true">
           {initial}
         </span>
-        <span className={styles.userText}>{displayName}</span>
         <span className={styles.caret} aria-hidden="true">
-          ▾
+          
         </span>
       </button>
 
@@ -138,7 +141,7 @@ export default function UserMenu() {
         aria-label="User menu"
       >
         <Link className={styles.userItem} href="/profile" role="menuitem">
-          PROFILE
+          PROFILE 
         </Link>
         <Link className={styles.userItem} href="/settings" role="menuitem">
           SETTINGS
