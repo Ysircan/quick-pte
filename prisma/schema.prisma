@@ -28,9 +28,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // ✅ relations (add these)
   progress         UserProgress?
   languageProgress UserLanguageProgress[]
+
+  // ✅ add: wfd runs (map存档)
+  wfdRuns WfdRun[]
 
   @@index([createdAt])
 }
@@ -62,5 +64,33 @@ model UserLanguageProgress {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, language])
+  @@index([userId, updatedAt])
+}
+model WfdRun {
+  id     String @id @default(cuid())
+  userId String
+
+  // 你现在只有 Map1/Map2/Map3 的概念
+  mapId Int @default(1)
+
+  // 用于复现同一张图（图生成规则稳定时很好用）
+  seed  Int
+
+  // ✅ 核心：把你现在的 SerializedMapState 整个 JSON 存进来
+  // 例如：selectedByRow/reachable/visited/activeEdges/graph...
+  stateJson Json
+
+  // run 层面的生命/资源
+  hp Int @default(3)
+
+  // "ACTIVE" | "WON" | "DEAD"
+  status String @default("ACTIVE")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, updatedAt])
   @@index([userId, updatedAt])
 }

@@ -1,4 +1,7 @@
+"use client";
+
 // components/dashboard/hero/QuickHero.tsx
+import { useRouter } from "next/navigation";
 import styles from "./quickHero.module.css";
 
 type QuickHeroProps = {
@@ -7,6 +10,7 @@ type QuickHeroProps = {
 };
 
 export default function QuickHero({ accent, fullHeight = true }: QuickHeroProps) {
+  const router = useRouter();
   const style = accent ? ({ ["--accent" as any]: accent } as React.CSSProperties) : undefined;
 
   return (
@@ -34,7 +38,11 @@ export default function QuickHero({ accent, fullHeight = true }: QuickHeroProps)
           </div>
 
           <div className={styles.ctaRow}>
-            <button className={styles.cta} type="button">
+            <button
+              className={styles.cta}
+              type="button"
+              onClick={() => router.push("/engine/wfd/map")}
+            >
               START RUN
             </button>
           </div>

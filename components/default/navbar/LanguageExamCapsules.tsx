@@ -15,7 +15,9 @@ export default function LanguageExamCapsules() {
   useEffect(() => {
     const stored = getActiveLanguage().lang;
     if (stored !== activeLang) setActiveLang(stored);
-  }, []);
+    // 同步到共享状态，确保 Hero 初始取到正确颜色
+    setActiveLanguage(stored);
+  }, [activeLang]);
 
   const accent = LANGUAGE_META[activeLang].accent;
   const langLabel = LANGUAGE_META[activeLang].label;

@@ -1,62 +1,40 @@
 "use client";
 
-import type { TodoTask } from "./types";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./todoCard.module.css";
 import TaskList from "./TaskList";
+import type { TodoTask } from "./types";
 
 const MOCK_TASKS: TodoTask[] = [
-  {
-    id: "wfd-sprint",
-    title: "WFD Sprint",
-    meta: "15 items",
-    details:
-      "Type 15 sentences. Target 90% accuracy. Keep rhythm and avoid missing articles.",
-  },
-  {
-    id: "mistake-review",
-    title: "Mistake Review",
-    meta: "8 wrong",
-    details:
-      "Fix 8 wrong sentences from your pool. Re-type until you get 2 clean passes.",
-  },
-  {
-    id: "boss-challenge",
-    title: "Boss Challenge",
-    meta: "timed",
-    details:
-      "One timed run. No pause. Try to beat your last score and keep accuracy stable.",
-  },
+  { id: "wfd", title: "WFD Sprint", meta: "15 items", details: "Type 15 sentences. Target 90% accuracy. Keep rhythm and avoid missing articles." },
+  { id: "mistake", title: "Mistake Review", meta: "8 wrong", details: "Fix 8 wrong sentences from your pool. Re-type until you get 2 clean passes." },
+  { id: "boss", title: "Boss Challenge", meta: "timed", details: "One timed run. No pause. Try to beat your last score and keep accuracy stable." },
 ];
 
-type Props = {
-  title?: string;                 // 默认 "To Do"
-  tasks?: TodoTask[];             // 不传就用 MOCK_TASKS
-  description?: string;           // 默认说明
-  onStartReview?: (taskId: string) => void; // 后面接路由/开始训练用
-};
+export default function TodayTodoCard() {
+  const tasks = MOCK_TASKS;
+  const router = useRouter();
 
-export default function TodayTodoCard({
-  title = "To Do",
-  tasks = MOCK_TASKS,
-  description = "Tap a task row to expand details below.",
-  onStartReview,
-}: Props) {
+  const badgeText = useMemo(() => {
+    const n = tasks.length;
+    return `${n} item${n === 1 ? "" : "s"}`;
+  }, [tasks.length]);
+
   return (
     <section className={styles.card} aria-label="To Do">
-      <header className={styles.cardHeader}>
-        <h2 className={styles.cardTitle}>{title}</h2>
-        <span className={styles.badge}>{tasks.length} items</span>
-      </header>
+      <div className={styles.cardHeader}>
+        <h2 className={styles.cardTitle}>To Do</h2>
+        <span className={styles.badge}>{badgeText}</span>
+      </div>
 
-      <p className={styles.cardBody}>{description}</p>
+      <p className={styles.cardBody}>Tap a task row to expand details below.</p>
 
       <TaskList
         tasks={tasks}
-        onStartReview={(id) => {
-          // MVP：先不做跳转也行，默认 console 一下
-          if (onStartReview) return onStartReview(id);
-          // eslint-disable-next-line no-console
-          console.log("Start Review:", id);
+        onStartReview={(taskId) => {
+          // Navigate to the WFD map page when starting a run
+          router.push("/engine/wfd/map");
         }}
       />
     </section>

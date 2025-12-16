@@ -6,6 +6,10 @@ import { LANGUAGE_META, LanguageKey } from "./languageExamMap";
 
 const STORAGE_KEY = "active-language";
 const DEFAULT_LANG: LanguageKey = "english";
+const DEFAULT_STATE: LangState = {
+  lang: DEFAULT_LANG,
+  accent: LANGUAGE_META[DEFAULT_LANG].accent,
+};
 
 type LangState = { lang: LanguageKey; accent: string };
 
@@ -15,14 +19,14 @@ function normalizeLang(raw: any): LanguageKey {
 
 function readState(): LangState {
   if (typeof window === "undefined") {
-    return { lang: DEFAULT_LANG, accent: LANGUAGE_META[DEFAULT_LANG].accent };
+    return DEFAULT_STATE;
   }
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as { lang?: string };
     const lang = normalizeLang(saved.lang);
     return { lang, accent: LANGUAGE_META[lang].accent };
   } catch {
-    return { lang: DEFAULT_LANG, accent: LANGUAGE_META[DEFAULT_LANG].accent };
+    return DEFAULT_STATE;
   }
 }
 
@@ -41,7 +45,8 @@ export function getActiveLanguage(): LangState {
 }
 
 export function useActiveLanguage(): LangState {
-  const [state, setState] = useState<LangState>(() => readState());
+  // 初始与 SSR 一致，挂载后再读 localStorage 以避免 hydration mismatch
+  const [state, setState] = useState<LangState>(DEFAULT_STATE);
 
   useEffect(() => {
     const handler = (next: LangState) => setState(next);
